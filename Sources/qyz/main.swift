@@ -8,11 +8,15 @@
 import Foundation
 
 let input = """
-def abc(a, b, c):
+def abc(a: int, b: int, c: float):
     #   测试
     c = a += b
     return
 """
-let lexer = Lexer(input: input)
-print(lexer.analyze())
+let input1 = """
+def abc(a: int, b: int, c: float): double
+
+"""
+let p = Parser()
+p.parse(input: input1)
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import AST
 
 public class Lexer {
     
@@ -22,22 +23,19 @@ public class Lexer {
         return inputSource[index]
     }
     
-    public init(input: String) {
-        inputSource = Array(input)
-    }
-    
 }
 
 public extension Lexer {
     
-    func analyze() -> [Token] {
+    func analyze(input: String) -> [Token] {
+        inputSource = Array(input)
         var res: [Token] = []
         while true {
             let tok = advanceToNextToken()
+            res.append(tok)
             if tok == .eof {
                 break
             }
-            res.append(tok)
         }
         return res
     }

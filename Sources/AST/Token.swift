@@ -92,4 +92,15 @@ public enum Token: Equatable {
         }
     }
     
+    public var isNum: Bool {
+        switch self {
+        case .float(_):
+            return true
+        case .int(_):
+            return true
+        default:
+            return false
+        }
+    }
+    
 }
