@@ -14,6 +14,7 @@ public enum Token: Equatable {
     case char(UInt8) // 字符
     case `operator`(Operator)
     case string(String) // 字符串
+    case null
     case `for`
     case `if`
     case `else`
@@ -87,6 +88,8 @@ public enum Token: Equatable {
             self = .true
         case "false":
             self = .false
+        case "null":
+            self = .null
         default:
             self = .identifier(identifier)
         }

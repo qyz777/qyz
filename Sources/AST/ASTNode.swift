@@ -7,4 +7,8 @@
 
 import Foundation
 
-public class ASTNode {}
+public class ASTNode {
+    
+    public func description() {}
+    
+}

@@ -17,6 +17,11 @@ let input1 = """
 def abc(a: int, b: int, c: float): double
 
 """
+let input2 = """
+a = 3 + 1
+b = 7 + a
+c = (10 + (a + b))
+"""
 let p = Parser()
-p.parse(input: input1)
+p.parse(input: input2)
 

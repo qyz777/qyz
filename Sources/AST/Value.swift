@@ -21,6 +21,21 @@ public class VoidExpr: Expr {}
 
 public class NullExpr: Expr {}
 
+public class IntExpr: Expr {
+    
+    public let value: Int
+    
+    public init(type: DataType, value: Int) {
+        self.value = value
+        super.init(type: type)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
+    }
+    
+}
+
 public class FloatExpr: Expr {
     
     public let value: Double
@@ -28,6 +43,10 @@ public class FloatExpr: Expr {
     public init(type: DataType, value: Double) {
         self.value = value
         super.init(type: type)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
     }
     
 }
@@ -41,6 +60,10 @@ public class BoolExpr: Expr {
         super.init(type: .bool)
     }
     
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
+    }
+    
 }
 
 public class StringExpr: Expr {
@@ -50,6 +73,25 @@ public class StringExpr: Expr {
     public init(value: String) {
         self.value = value
         super.init(type: .string)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
+    }
+    
+}
+
+public class ValExpr: Expr {
+    
+    public let value: String
+    
+    public init(value: String) {
+        self.value = value
+        super.init(type: .variable)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
     }
     
 }

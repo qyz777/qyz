@@ -49,4 +49,52 @@ public enum Operator: String {
             return 30
         }
     }
+    
+    public var isUnary: Bool {
+        switch self {
+        case .minus, .not:
+            return true
+        default:
+            return false
+        }
+    }
+}
+
+public class BinaryExpr: Expr {
+    
+    public let lhs: Expr
+    
+    public let rhs: Expr
+    
+    public let op: Operator
+    
+    public init(op: Operator, lhs: Expr, rhs: Expr) {
+        self.op = op
+        self.lhs = lhs
+        self.rhs = rhs
+        super.init(type: .default)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): lhs: \(lhs), op: \(op), rhs: \(rhs)")
+    }
+    
+}
+
+public class UnaryExpr: Expr {
+    
+    public let op: Operator
+    
+    public let rhs: Expr
+    
+    public init(op: Operator, rhs: Expr) {
+        self.op = op
+        self.rhs = rhs
+        super.init(type: .default)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): op: \(op), rhs: \(rhs)")
+    }
+    
 }
