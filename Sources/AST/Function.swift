@@ -33,9 +33,9 @@ public class PrototypeNode: ASTNode {
 public class FunctionNode: ASTNode {
     
     let prototype: PrototypeNode
-    let body: FuncBlockStmt
+    let body: BlockStmt
     
-    public init(prototype: PrototypeNode, body: FuncBlockStmt) {
+    public init(prototype: PrototypeNode, body: BlockStmt) {
         self.prototype = prototype
         self.body = body
     }
