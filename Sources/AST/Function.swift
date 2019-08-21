@@ -28,6 +28,10 @@ public class PrototypeNode: ASTNode {
         self.returnType = returnType
     }
     
+    public override func description() {
+        debugPrint("\(self): , name: \(name), args: \(args), returnType: \(returnType)")
+    }
+    
 }
 
 public class FunctionNode: ASTNode {
@@ -38,6 +42,10 @@ public class FunctionNode: ASTNode {
     public init(prototype: PrototypeNode, body: BlockStmt) {
         self.prototype = prototype
         self.body = body
+    }
+    
+    public override func description() {
+        debugPrint("\(self): prototype: \(prototype), body: \(body)")
     }
     
 }

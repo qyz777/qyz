@@ -16,6 +16,17 @@ public class Parser {
     
     private var tokens: [Token] = []
     
+    /// 进入一个block后+4，当前代码必须从此列开始，否则不符合规范
+    private var currentColumnStart = 0
+    
+    /// 进入block前的开始列
+    private var lastColumnStart: Int {
+        guard currentColumnStart - 4 >= 0 else {
+            return 0
+        }
+        return currentColumnStart - 4
+    }
+    
     private var currentToken: Token {
         guard currentIndex < tokens.count else {
             return Token.eof
@@ -35,9 +46,10 @@ public extension Parser {
         debugPrint(tokens)
         while currentToken != .eof {
             if currentToken == .def {
-                parseDefinition()
+                let def = parseDefinition()
+                def.description()
             } else if case .identifier(_) = currentToken {
-                let v = parseValueExpr()
+                let v = parseExpr()
                 v.description()
             } else {
                 nextToken()
@@ -47,27 +59,68 @@ public extension Parser {
     
 }
 
+// MARK: - 私有便捷方法
 private extension Parser {
     
+    /// 下一个token
     func nextToken() {
         currentIndex += 1
     }
     
+    /// 下一个token，中间是whitespace的忽略
     func nextTokenWithoutWhitespace() {
         nextToken()
         skipWhitespace()
     }
     
+    /// 跳过whitespace
     func skipWhitespace() {
         while currentToken == .whitespace || currentToken == .tab {
             nextToken()
         }
     }
     
-    func parseDefinition() {
+    /// 跳过newLine
+    func skipNewLine() {
+        while currentToken == .newLine {
+            nextToken()
+        }
+    }
+    
+    /// 进入一个block，起始列+4
+    func enterBlock() {
+        currentColumnStart += 4
+    }
+    
+    /// 离开一个block，起始列-4
+    func leaveBlock() {
+        currentColumnStart -= 4
+    }
+    
+    /// 检测进入block前有没有`:\n`
+    func checkoutBlock() {
+        guard currentToken == .colon else {
+            fatalError("Expected ':'.")
+        }
+        nextToken()
+        guard currentToken == .newLine || currentToken == .eof else {
+            fatalError("The code format does not conform to the specification!")
+        }
+        nextToken()
+    }
+    
+}
+
+//MARK: Function
+private extension Parser {
+    
+    func parseDefinition() -> FunctionNode {
         nextToken()
         let p = parsePrototype()
-        debugPrint(p)
+        p.description()
+        let body = parseBlockStmt()
+        body.description()
+        return FunctionNode(prototype: p, body: body)
     }
     
     func parsePrototype() -> PrototypeNode {
@@ -134,15 +187,94 @@ private extension Parser {
     
 }
 
-//MARK: Value
+//MARK: Stmt
 private extension Parser {
     
-    func parseValueExpr() -> Expr {
+    func parseStmt() -> Stmt {
+        //todo:支持其他Stmt解析
+        let stmt: Stmt
+        switch currentToken {
+        case .if:
+            stmt = parseIfStmt()
+        default:
+            stmt = ExprStmt(expr: parseExpr())
+        }
+        return stmt
+    }
+    
+    /// 解析IfStmt
+    ///
+    /// - Returns: IfStmt
+    func parseIfStmt() -> IfStmt {
+        nextTokenWithoutWhitespace()
+        let expr = parseExpr()
+        checkoutBlock()
+        var conditions = [(expr, parseBlockStmt())]
+        var elseCondition: BlockStmt? = nil
+        //循环解析elif
+        while case .elif = currentToken {
+            nextTokenWithoutWhitespace()
+            let elifExpr = parseExpr()
+            checkoutBlock()
+            conditions += [(elifExpr, parseBlockStmt())]
+        }
+        //如果有else则解析else
+        if case .else = currentToken {
+            nextToken()
+            checkoutBlock()
+            //else是最后一行，让整个if的stmt去检查newLine
+            elseCondition = parseBlockStmt(check: false)
+        }
+        return IfStmt(conditions: conditions, elseCondition: elseCondition)
+    }
+    
+    /// 解析BlockStmt
+    /// 用来解析一块混合的Stmt
+    ///
+    /// - Parameter check: 是否检查newLine。block后必须跟一个newLine，否则违反语法
+    /// - Returns: BlockStmt
+    func parseBlockStmt(check: Bool = true) -> BlockStmt {
+        enterBlock()
+        var stmts: [Stmt] = []
+        while true {
+            var whitespaceCount = 0
+            while currentToken == .whitespace {
+                whitespaceCount += 1
+                nextToken()
+            }
+            //缩进往前了，该结束这个block了，暂时写成0也可以出去
+            //todo: 假如会支持class的话这里需要支持类的缩进
+            if whitespaceCount == lastColumnStart || whitespaceCount == 0 {
+                break
+            }
+            //缩进有错误
+            guard whitespaceCount == currentColumnStart else {
+                fatalError("Invalid indentation!")
+            }
+            stmts.append(parseStmt())
+            if check {
+                //检查newLine，一个block后必须有newLine，否则违反语法
+                guard currentToken == .newLine || currentToken == .eof else {
+                    fatalError("The code format does not conform to the specification!")
+                }
+                skipNewLine()
+            }
+        }
+        leaveBlock()
+        return BlockStmt(stmts: stmts)
+    }
+    
+}
+
+//MARK: Expr
+private extension Parser {
+    
+    func parseExpr() -> Expr {
         var expr: Expr!
         switch currentToken {
         case .operator(let op) where op.isUnary:
             nextTokenWithoutWhitespace()
-            let val = parseValueExpr()
+            let val = parseExpr()
             if let num = val as? IntExpr, op == .minus {
                 return IntExpr(type: .int64, value: -num.value)
             } else if let num = val as? FloatExpr, op == .minus {
@@ -152,7 +284,7 @@ private extension Parser {
             }
         case .leftParen:
             nextTokenWithoutWhitespace()
-            let val = parseValueExpr()
+            let val = parseExpr()
             guard currentToken == .rightParen else {
                 fatalError("Expected ')' after \(val).")
             }
@@ -188,7 +320,7 @@ private extension Parser {
                 return lhs
             }
             nextTokenWithoutWhitespace()
-            var rhs = parseValueExpr()
+            var rhs = parseExpr()
             let nextPrec = getTokenPrecedence()
             if tokPrec < nextPrec {
                 rhs = parseBinary(tokPrec + 1, lhs: &rhs)

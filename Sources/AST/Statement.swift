@@ -18,6 +18,12 @@ public class BlockStmt: Stmt {
         self.stmts = stmts
     }
     
+    public override func description() {
+        for s in stmts {
+            s.description()
+        }
+    }
+    
 }
 
 /// return <expr>
@@ -42,6 +48,10 @@ public class IfStmt: Stmt {
     public init(conditions: [(Expr, BlockStmt)], elseCondition: BlockStmt? = nil) {
         self.conditions = conditions
         self.elseCondition = elseCondition
+    }
+    
+    public override func description() {
+        debugPrint("\(self): conditions: \(conditions), elseCondition: \(String(describing: elseCondition))")
     }
     
 }
@@ -85,6 +95,10 @@ public class ExprStmt: Stmt {
     
     public init(expr: Expr) {
         self.expr = expr
+    }
+    
+    public override func description() {
+        expr.description()
     }
     
 }
