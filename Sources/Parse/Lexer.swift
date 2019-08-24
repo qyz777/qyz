@@ -8,7 +8,7 @@
 import Foundation
 import AST
 
-public class Lexer {
+class Lexer {
     
     public var currentToken: Token?
     
@@ -25,7 +25,7 @@ public class Lexer {
     
 }
 
-public extension Lexer {
+extension Lexer {
     
     func analyze(input: String) -> [Token] {
         inputSource = Array(input)
