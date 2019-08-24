@@ -81,6 +81,21 @@ public class StringExpr: Expr {
     
 }
 
+public class ValDecl: Expr {
+    
+    public let value: String
+    
+    public init(type: DataType, value: String) {
+        self.value = value
+        super.init(type: type)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
+    }
+    
+}
+
 public class ValExpr: Expr {
     
     public let value: String
@@ -88,6 +103,36 @@ public class ValExpr: Expr {
     public init(value: String) {
         self.value = value
         super.init(type: .variable)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): type: \(type), value: \(value)")
+    }
+    
+}
+
+public class ArrayExpr: Expr {
+    
+    public let values: [Expr]
+    
+    public init(values: [Expr]) {
+        self.values = values
+        super.init(type: .default)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): values: \(values)")
+    }
+    
+}
+
+public class ArrayDecl: Expr {
+    
+    public let value: String
+    
+    public init(type: DataType, value: String) {
+        self.value = value
+        super.init(type: type)
     }
     
     public override func description() {

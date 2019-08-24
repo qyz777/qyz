@@ -34,6 +34,9 @@ public class Parser {
         return tokens[currentIndex]
     }
     
+    /// 记录标识符是否声明过
+    var identifierSet: Set<String> = []
+    
     public init() {}
     
 }
@@ -56,6 +59,7 @@ public extension Parser {
                 s.description()
             }
         }
+        identifierSet.removeAll()
     }
     
 }

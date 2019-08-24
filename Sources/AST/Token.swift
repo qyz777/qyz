@@ -28,8 +28,10 @@ public enum Token: Equatable {
     case comma // ","
     case ellipsis // "..."
     case ellipsisLess // "..<"
-    case leftParen
-    case rightParen
+    case leftParen // "("
+    case rightParen // ")"
+    case leftBracket // "["
+    case rightBracket // "]"
     case `true`
     case `false`
     case def
@@ -53,6 +55,10 @@ public enum Token: Equatable {
             self = .leftParen
         case ")":
             self = .rightParen
+        case "[":
+            self = .leftBracket
+        case "]":
+            self = .rightBracket
         case "\n", "\r":
             self = .newLine
         case " ":
@@ -141,12 +147,10 @@ public enum Token: Equatable {
             return 6
         case .continue:
             return 8
-        case .colon, .comma, .whitespace:
+        case .colon, .comma, .whitespace, .leftParen, .rightParen, .leftBracket, .rightBracket:
             return 1
         case .ellipsis, .ellipsisLess:
             return 3
-        case .leftParen, .rightParen:
-            return 1
         case .newLine:
             return 7
         case .eof:

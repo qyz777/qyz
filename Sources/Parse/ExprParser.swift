@@ -42,9 +42,64 @@ extension Parser {
             expr = NullExpr(type: .null)
         case .string(let str):
             expr = StringExpr(value: str)
+        case .leftBracket:
+            nextTokenWithoutWhitespace()
+            var values: [Expr] = []
+            while true {
+                values.append(parseExpr())
+                if currentToken == .rightBracket {
+                    break
+                }
+                guard currentToken == .comma else {
+                    fatalError("Expected ',' in array.")
+                }
+                nextTokenWithoutWhitespace()
+            }
+            expr = ArrayExpr(values: values)
         case .identifier(let str):
-            //todo: 类型检查
-            expr = ValExpr(value: str)
+            nextToken()
+            if currentToken == .colon {
+                //类型声明
+                nextTokenWithoutWhitespace()
+                if currentToken == .leftBracket {
+                    var bracketCount = 0
+                    while currentToken == .leftBracket {
+                        bracketCount += 1
+                        nextTokenWithoutWhitespace()
+                    }
+                    guard case let .identifier(type) = currentToken else {
+                        fatalError("Expected data type after \(str).")
+                    }
+                    let dataType = DataType(name: type)
+                    nextTokenWithoutWhitespace()
+                    guard currentToken == .rightBracket else {
+                        fatalError("Expected ']' after type: \(type).")
+                    }
+                    while currentToken == .rightBracket {
+                        bracketCount -= 1
+                        nextTokenWithoutWhitespace()
+                    }
+                    guard bracketCount == 0 else {
+                        fatalError("Expected ']' after type: \(type).")
+                    }
+                    expr = ArrayDecl(type: dataType, value: str)
+                } else {
+                    guard case let .identifier(type) = currentToken else {
+                        fatalError("Expected data type after \(str).")
+                    }
+                    let dataType = DataType(name: type)
+                    nextTokenWithoutWhitespace()
+                    identifierSet.insert(str)
+                    expr = ValDecl(type: dataType, value: str)
+                }
+            } else {
+                guard identifierSet.contains(str) else {
+                    fatalError("\(str) must be declared before use!")
+                }
+                expr = ValExpr(value: str)
+            }
+            skipWhitespace()
+            return parseBinary(0, lhs: &expr)
         default:
             fatalError("Unknow value in when parsing val expr.")
         }
