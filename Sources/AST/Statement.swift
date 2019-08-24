@@ -74,9 +74,13 @@ public class ForStmt: Stmt {
         self.body = body
     }
     
+    public override func description() {
+        debugPrint("\(self): initializer: \(initializer), condition: \(condition), step: \(step), body: \(body)")
+    }
+    
 }
 
-public class WhileExpr: Stmt {
+public class WhileStmt: Stmt {
     
     public let condition: Expr
     
@@ -85,6 +89,10 @@ public class WhileExpr: Stmt {
     public init(condition: Expr, body: BlockStmt) {
         self.condition = condition
         self.body = body
+    }
+    
+    public override func description() {
+        debugPrint("\(self): condition: \(condition), body: \(body)")
     }
     
 }

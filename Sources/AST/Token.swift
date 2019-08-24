@@ -20,7 +20,7 @@ public enum Token: Equatable {
     case `else`
     case elif
     case `in`
-    case `where`
+    case `while`
     case `return`
     case `break`
     case `continue`
@@ -35,7 +35,7 @@ public enum Token: Equatable {
     case def
     case newLine
     case whitespace // " "
-    case tab // "   "
+    case tab // "\t"
     case eof
     case unknow(String)
     
@@ -78,8 +78,8 @@ public enum Token: Equatable {
             self = .elif
         case "in":
             self = .in
-        case "where":
-            self = .where
+        case "while":
+            self = .while
         case "break":
             self = .break
         case "continue":
@@ -100,6 +100,15 @@ public enum Token: Equatable {
         case .float(_):
             return true
         case .int(_):
+            return true
+        default:
+            return false
+        }
+    }
+    
+    public var isWhitespace: Bool {
+        switch self {
+        case .whitespace, .newLine, .tab:
             return true
         default:
             return false

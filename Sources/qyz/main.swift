@@ -35,6 +35,20 @@ def abc(a: int, b: int, c: float): double
         a += 1
 a = 100
 """
+let input3 = """
+a = 0
+for i = 0, i < 10, i += 1:
+    a += i
+    a -= 1
+j = 0
+while j < 10:
+    a += i
+    j += 1
+    if a > 5:
+        break
+    else:
+        continue
+"""
 let p = Parser()
-p.parse(input: input2)
+p.parse(input: input3)
 

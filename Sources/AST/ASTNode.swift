@@ -11,4 +11,6 @@ public class ASTNode {
     
     public func description() {}
     
+    public init() {}
+    
 }
