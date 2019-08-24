@@ -16,7 +16,8 @@ public struct Argument {
     }
 }
 
-public class PrototypeNode: ASTNode {
+/// 函数声明
+public class FuncDeclNode: ASTNode {
     
     let name: String
     let args: [Argument]
@@ -34,18 +35,19 @@ public class PrototypeNode: ASTNode {
     
 }
 
+/// 函数
 public class FunctionNode: ASTNode {
     
-    let prototype: PrototypeNode
+    let decl: FuncDeclNode
     let body: BlockStmt
     
-    public init(prototype: PrototypeNode, body: BlockStmt) {
-        self.prototype = prototype
+    public init(prototype: FuncDeclNode, body: BlockStmt) {
+        self.decl = prototype
         self.body = body
     }
     
     public override func description() {
-        debugPrint("\(self): prototype: \(prototype), body: \(body)")
+        debugPrint("\(self): decl: \(decl), body: \(body)")
     }
     
 }
