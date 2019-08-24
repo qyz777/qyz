@@ -115,4 +115,45 @@ public enum Token: Equatable {
         }
     }
     
+    public var count: Int {
+        switch self {
+        case .int(let i):
+            return "\(i)".count
+        case .float(let f):
+            return "\(f)".count
+        case .identifier(let id):
+            return id.count
+        case .char(let u):
+            return "\(u)".count
+        case .operator(let o):
+            return o.rawValue.count
+        case .string(let s):
+            return s.count
+        case .null, .else, .elif, .true:
+            return 4
+        case .for, .def:
+            return 3
+        case .if, .in, .tab:
+            return 2
+        case .while, .break, .false:
+            return 5
+        case .return:
+            return 6
+        case .continue:
+            return 8
+        case .colon, .comma, .whitespace:
+            return 1
+        case .ellipsis, .ellipsisLess:
+            return 3
+        case .leftParen, .rightParen:
+            return 1
+        case .newLine:
+            return 7
+        case .eof:
+            return 0
+        case .unknow(let s):
+            return s.count
+        }
+    }
+    
 }
