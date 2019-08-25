@@ -1,6 +1,6 @@
 //
 //  StatementParser.swift
-//  AST
+//  Parse
 //
 //  Created by Q YiZhong on 2019/8/24.
 //
@@ -23,6 +23,13 @@ extension Parser {
             stmt = parseBreakStmt()
         case .continue:
             stmt = parseContinueStmt()
+        case .identifier(_):
+            if nextCurrentToken == .colon {
+                //多看下一个token，是':'就说明是变量声明
+                stmt = DeclStmt(decl: parseVarDecl())
+            } else {
+                stmt = ExprStmt(expr: parseExpr())
+            }
         default:
             stmt = ExprStmt(expr: parseExpr())
         }
@@ -60,7 +67,7 @@ extension Parser {
     /// - Returns: ForStmt
     func parseForStmt() -> ForStmt {
         nextTokenWithoutWhitespace()
-        let initialzer = parseExpr()
+        let initialzer = parseVarDecl()
         guard currentToken == .comma else {
             fatalError("Excepted ',' after initialzer in for loop.")
         }

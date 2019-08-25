@@ -81,32 +81,17 @@ public class StringExpr: Expr {
     
 }
 
-public class ValDecl: Expr {
+public class VarExpr: Expr {
     
-    public let value: String
+    public let name: String
     
-    public init(type: DataType, value: String) {
-        self.value = value
-        super.init(type: type)
-    }
-    
-    public override func description() {
-        debugPrint("\(self): type: \(type), value: \(value)")
-    }
-    
-}
-
-public class ValExpr: Expr {
-    
-    public let value: String
-    
-    public init(value: String) {
-        self.value = value
+    public init(name: String) {
+        self.name = name
         super.init(type: .variable)
     }
     
     public override func description() {
-        debugPrint("\(self): type: \(type), value: \(value)")
+        debugPrint("\(self): type: \(type), name: \(name)")
     }
     
 }
@@ -122,21 +107,6 @@ public class ArrayExpr: Expr {
     
     public override func description() {
         debugPrint("\(self): values: \(values)")
-    }
-    
-}
-
-public class ArrayDecl: Expr {
-    
-    public let value: String
-    
-    public init(type: DataType, value: String) {
-        self.value = value
-        super.init(type: type)
-    }
-    
-    public override func description() {
-        debugPrint("\(self): type: \(type), value: \(value)")
     }
     
 }

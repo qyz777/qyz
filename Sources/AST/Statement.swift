@@ -9,7 +9,7 @@ import Foundation
 
 public class Stmt: ASTNode {}
 
-/// 混合Stmt，包含多种Stmt在内<colon-block>
+/// 混合Stmt，包含多种Stmt在内 <block-stmt> ::= [<stmt>]
 public class BlockStmt: Stmt {
     
     let stmts: [Stmt]
@@ -26,7 +26,7 @@ public class BlockStmt: Stmt {
     
 }
 
-/// return <expr>
+/// <return-stmt> ::= return <expr>
 public class ReturnStmt: Stmt {
     
     public let value: Expr
@@ -37,7 +37,7 @@ public class ReturnStmt: Stmt {
     
 }
 
-/// if <expr> <colon-block>
+/// <if-stmt> ::= if <expr> : <block-stmt>
 public class IfStmt: Stmt {
     
     /// 这里使用元组数组是为了表示`elif`的情况
@@ -56,10 +56,10 @@ public class IfStmt: Stmt {
     
 }
 
-/// for <expr>, <expr>, <expr> <colon-block>
+/// <for-stmt> ::= for <var-decl>, <expr>, <expr>: <block-stmt>
 public class ForStmt: Stmt {
     
-    public let initializer: Expr
+    public let initializer: VarDecl
     
     public let condition: Expr
     
@@ -67,7 +67,7 @@ public class ForStmt: Stmt {
     
     public let body: BlockStmt
     
-    public init(initializer: Expr, condition: Expr, step: Expr, body: BlockStmt) {
+    public init(initializer: VarDecl, condition: Expr, step: Expr, body: BlockStmt) {
         self.initializer = initializer
         self.condition = condition
         self.step = step
@@ -80,6 +80,7 @@ public class ForStmt: Stmt {
     
 }
 
+/// <while-stmt> ::= while <expr> : <block-stmt>
 public class WhileStmt: Stmt {
     
     public let condition: Expr
@@ -107,6 +108,20 @@ public class ExprStmt: Stmt {
     
     public override func description() {
         expr.description()
+    }
+    
+}
+
+public class DeclStmt: Stmt {
+    
+    public let decl: Decl
+    
+    public init(decl: Decl) {
+        self.decl = decl
+    }
+    
+    public override func description() {
+        decl.description()
     }
     
 }

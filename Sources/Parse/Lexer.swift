@@ -1,6 +1,6 @@
 //
 //  Lexer.swift
-//  LLVM
+//  Parse
 //
 //  Created by Q YiZhong on 2019/8/11.
 //
@@ -38,6 +38,11 @@ extension Lexer {
             }
         }
         return res
+    }
+    
+    func clear() {
+        index = 0
+        inputSource.removeAll()
     }
     
 }

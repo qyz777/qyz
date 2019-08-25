@@ -9,45 +9,68 @@ import Foundation
 
 public struct Argument {
     let label: String
-    let type: DataType
-    public init(label: String, type: DataType) {
+    let val: Expr
+    public init(label: String, val: Expr) {
         self.label = label
-        self.type = type
+        self.val = val
     }
+}
+
+/// 函数原型
+/// <func-prototype> ::= <identifier>(<param-decl>*) : <data-type>
+public class FuncPrototype: Decl {
+    
+    let name: String
+    let params: [ParamDecl]
+    let returnType: DataType
+    
+    public init(name: String, params: [ParamDecl], returnType: DataType) {
+        self.name = name
+        self.params = params
+        self.returnType = returnType
+        super.init(type: .def)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): , name: \(name), params: \(params), returnType: \(returnType)")
+    }
+    
 }
 
 /// 函数声明
-public class FuncDeclNode: ASTNode {
+/// <func> ::= <prototype> \n <block-stmt>
+public class FuncNode: Decl {
     
-    let name: String
-    let args: [Argument]
-    let returnType: DataType
+    let prototype: FuncPrototype
+    let body: BlockStmt
     
-    public init(name: String, args: [Argument], returnType: DataType) {
-        self.name = name
-        self.args = args
-        self.returnType = returnType
+    public init(prototype: FuncPrototype, body: BlockStmt) {
+        self.prototype = prototype
+        self.body = body
+        super.init(type: .def)
     }
     
     public override func description() {
-        debugPrint("\(self): , name: \(name), args: \(args), returnType: \(returnType)")
+        debugPrint("\(self): prototype: \(prototype), body: \(body)")
     }
     
 }
 
-/// 函数
-public class FunctionNode: ASTNode {
+/// 函数调用
+/// <func-call-expr> ::= <identifier>(<argument>*)
+public class FuncCallExpr: Expr {
     
-    let decl: FuncDeclNode
-    let body: BlockStmt
+    let name: String
+    let args: [Argument]
     
-    public init(prototype: FuncDeclNode, body: BlockStmt) {
-        self.decl = prototype
-        self.body = body
+    public init(name: String, args: [Argument]) {
+        self.name = name
+        self.args = args
+        super.init(type: .def)
     }
     
     public override func description() {
-        debugPrint("\(self): decl: \(decl), body: \(body)")
+        debugPrint("\(self): , name: \(name), args: \(args)")
     }
     
 }

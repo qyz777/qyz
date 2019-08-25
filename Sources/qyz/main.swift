@@ -9,7 +9,7 @@ import Foundation
 import Parse
 
 let input = """
-a: [Int] = [1, 2, 3, 4]
+a: [int] = [1, 2, 3, 4]
 """
 let input1 = """
 def abc(a: int, b: int, c: float): double
@@ -31,7 +31,7 @@ def abc(a: int, b: int, c: float): double
         a -= 1
     else:
         a += 1
-a = 100
+a = abc(a: 10, b: 1, c: 1.1)
 """
 let input3 = """
 a: int = 0
@@ -49,4 +49,7 @@ while j < 10:
 """
 let p = Parser()
 p.parse(input: input)
+p.parse(input: input1)
+p.parse(input: input2)
+p.parse(input: input3)
 

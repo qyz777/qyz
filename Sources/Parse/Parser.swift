@@ -1,6 +1,6 @@
 //
 //  Parser.swift
-//  LLVM
+//  Parse
 //
 //  Created by Q YiZhong on 2019/8/17.
 //
@@ -34,8 +34,14 @@ public class Parser {
         return tokens[currentIndex]
     }
     
-    /// 记录标识符是否声明过
-    var identifierSet: Set<String> = []
+    /// 下一个currentToken，遇到whitespace则略过
+    var nextCurrentToken: Token {
+        var index = currentIndex + 1
+        while index < tokens.count && tokens[index] == .whitespace {
+            index += 1
+        }
+        return tokens[index]
+    }
     
     public init() {}
     
@@ -59,12 +65,12 @@ public extension Parser {
                 s.description()
             }
         }
-        identifierSet.removeAll()
+        clear()
     }
     
 }
 
-// MARK: - 私有便捷方法
+// MARK: - 私有方法
 extension Parser {
     
     /// 下一个token
@@ -112,6 +118,13 @@ extension Parser {
             fatalError("The code format does not conform to the specification!")
         }
         nextToken()
+    }
+    
+    func clear() {
+        tokens.removeAll()
+        currentColumnStart = 0
+        currentIndex = 0
+        lexer.clear()
     }
     
 }

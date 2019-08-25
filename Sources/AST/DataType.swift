@@ -22,6 +22,8 @@ public enum DataType {
     case string
     case variable
     case null
+    indirect case array(type: DataType)
+    case def
     
     case `default`
     
