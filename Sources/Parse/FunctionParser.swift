@@ -13,11 +13,11 @@ extension Parser {
     /// 解析函数声明
     ///
     /// - Returns: FuncNode
-    func parseDefinition() -> FuncNode {
+    func parseFuncDecl() -> FuncDecl {
         nextToken()
         let p = parsePrototype()
         let body = parseBlockStmt()
-        return FuncNode(prototype: p, body: body)
+        return FuncDecl(prototype: p, body: body)
     }
     
     /// 解析函数调用

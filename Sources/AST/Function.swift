@@ -38,8 +38,8 @@ public class FuncPrototype: Decl {
 }
 
 /// 函数声明
-/// <func> ::= <prototype> \n <block-stmt>
-public class FuncNode: Decl {
+/// <func-decl> ::= <prototype> \n <block-stmt>
+public class FuncDecl: Decl {
     
     let prototype: FuncPrototype
     let body: BlockStmt

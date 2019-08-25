@@ -56,7 +56,7 @@ public extension Parser {
         }
         while currentToken != .eof {
             if currentToken == .def {
-                let def = parseDefinition()
+                let def = parseFuncDecl()
                 def.description()
             } else if currentToken.isWhitespace {
                 nextToken()
