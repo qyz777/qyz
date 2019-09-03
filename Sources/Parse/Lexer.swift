@@ -98,6 +98,22 @@ private extension Lexer {
                 advance()
             }
             return Token.operator(Operator(rawValue: op)!)
+        } else if currentChar!.isDoubleQuote {
+            var s = ""
+            repeat {
+                advance()
+                s.append(currentChar!)
+            } while currentChar != nil && !currentChar!.isDoubleQuote
+            advance()
+            return Token.string(s)
+        } else if currentChar!.isQuote {
+            var s = ""
+            repeat {
+                advance()
+                s.append(currentChar!)
+            } while currentChar != nil && !currentChar!.isQuote
+            advance()
+            return Token.string(s)
         }
         let symbol = Token.init(symbol: String(currentChar!))
         advance()
@@ -117,6 +133,14 @@ extension Character {
     
     var isOperator: Bool {
         return Character.operatorChars.contains(self)
+    }
+    
+    var isDoubleQuote: Bool {
+        return self == "\""
+    }
+    
+    var isQuote: Bool {
+        return self == "'"
     }
     
 }

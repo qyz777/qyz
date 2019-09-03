@@ -47,9 +47,13 @@ while j < 10:
     else:
         continue
 """
+let input4 = """
+a: string = '123'
+"""
 let p = Parser()
 p.parse(input: input)
 p.parse(input: input1)
 p.parse(input: input2)
 p.parse(input: input3)
+p.parse(input: input4)
 

@@ -11,7 +11,6 @@ public enum Token: Equatable {
     case int(Int)
     case float(Double)
     case identifier(String)
-    case char(UInt8) // 字符
     case `operator`(Operator)
     case string(String) // 字符串
     case null
@@ -129,8 +128,6 @@ public enum Token: Equatable {
             return "\(f)".count
         case .identifier(let id):
             return id.count
-        case .char(let u):
-            return "\(u)".count
         case .operator(let o):
             return o.rawValue.count
         case .string(let s):
