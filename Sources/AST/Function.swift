@@ -57,20 +57,20 @@ public class FuncDecl: Decl {
 }
 
 /// 函数调用
-/// <func-call-expr> ::= <identifier>(<argument>*)
+/// <func-call-expr> ::= <var-expr>(<argument>*)
 public class FuncCallExpr: Expr {
     
-    let name: String
+    let varExpr: VarExpr
     let args: [Argument]
     
-    public init(name: String, args: [Argument]) {
-        self.name = name
+    public init(varExpr: VarExpr, args: [Argument]) {
+        self.varExpr = varExpr
         self.args = args
         super.init(type: .def)
     }
     
     public override func description() {
-        debugPrint("\(self): , name: \(name), args: \(args)")
+        debugPrint("\(self): , var: \(varExpr), args: \(args)")
     }
     
 }

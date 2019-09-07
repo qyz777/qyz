@@ -31,6 +31,7 @@ public enum Token: Equatable {
     case rightParen // ")"
     case leftBracket // "["
     case rightBracket // "]"
+    case dot // "."
     case `true`
     case `false`
     case def
@@ -45,6 +46,8 @@ public enum Token: Equatable {
         switch symbol {
         case ":":
             self = .colon
+        case ".":
+            self = .dot
         case ",":
             self = .comma
         case "...":
@@ -149,7 +152,7 @@ public enum Token: Equatable {
             return 6
         case .continue:
             return 8
-        case .colon, .comma, .whitespace, .leftParen, .rightParen, .leftBracket, .rightBracket:
+        case .colon, .comma, .whitespace, .leftParen, .rightParen, .leftBracket, .rightBracket, .dot:
             return 1
         case .ellipsis, .ellipsisLess:
             return 3

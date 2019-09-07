@@ -24,6 +24,8 @@ public enum DataType {
     case null
     indirect case array(type: DataType)
     case def
+    case method
+    case property
     
     case `default`
     
@@ -40,7 +42,7 @@ public enum DataType {
         case "double": self = .double
         case "string": self = .string
         case "null": self = .null
-        default: self = .hotpot(name: name)
+        default: self = .default
         }
     }
     
@@ -51,7 +53,7 @@ public enum DataType {
 //
 //public class MethodDecl: FuncDecl {}
 
-/// 🍲 ::= hotpot : <data-type> [<var-decl>, <func-decl>]
+/// 🍲 ::= hotpot <hotpot-name> : <data-type> [<var-decl>, <func-decl>]
 public class HotpotDecl: Decl {
     
     private(set) public var properties: [VarDecl] = []

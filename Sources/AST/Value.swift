@@ -83,11 +83,14 @@ public class StringExpr: Expr {
 
 public class VarExpr: Expr {
     
+    /// 用来指向它的申明
+    public var decl: Decl?
+    
     public let name: String
     
     public init(name: String) {
         self.name = name
-        super.init(type: .hotpot(name: name))
+        super.init(type: .default)
     }
     
     public override func description() {
@@ -107,6 +110,55 @@ public class ArrayExpr: Expr {
     
     public override func description() {
         debugPrint("\(self): values: \(values)")
+    }
+    
+}
+
+public protocol RefExpr {
+    
+    var lhs: Expr { get }
+    
+    var varExpr: VarExpr { get }
+    
+}
+
+/// <method-ref-expr> ::= <var-expr>.<func-call-expr>
+public class MethodRefExpr: Expr, RefExpr {
+    
+    public let lhs: Expr
+    
+    public let varExpr: VarExpr
+    
+    public let funcCall: FuncCallExpr
+    
+    public init(lhs: Expr, varExpr: VarExpr, funcCall: FuncCallExpr) {
+        self.funcCall = funcCall
+        self.lhs = lhs
+        self.varExpr = varExpr
+        super.init(type: .method)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): lhs:\(lhs), call: \(funcCall)")
+    }
+    
+}
+
+/// <property-ref-expr> ::= <var-expr>.<var-expr>
+public class PropertyRefExpr: Expr, RefExpr {
+    
+    public let lhs: Expr
+    
+    public let varExpr: VarExpr
+    
+    public init(lhs: Expr, varExpr: VarExpr) {
+        self.lhs = lhs
+        self.varExpr = varExpr
+        super.init(type: .property)
+    }
+    
+    public override func description() {
+        debugPrint("\(self): lhs:\(lhs), var: \(varExpr)")
     }
     
 }

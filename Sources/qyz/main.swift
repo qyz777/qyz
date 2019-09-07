@@ -78,6 +78,10 @@ while j < 10:
         break
     else:
         continue
+
+h = abc()
+c = h.abc(a: 1, b: 2, c: 3)
+d = h.a
 """
 
 let p = Parser()

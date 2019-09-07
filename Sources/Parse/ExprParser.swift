@@ -58,6 +58,7 @@ extension Parser {
             expr = ArrayExpr(values: values)
         case .identifier(let name):
             if nextCurrentToken == .leftParen {
+                //这里无需操心解析的是火锅还是函数，因为既是这里是火锅，也可以被看作是隐式的调用火锅的初始化方法
                 expr = parseFuncCallExpr()
             } else {
                 expr = VarExpr(name: name)
@@ -66,10 +67,44 @@ extension Parser {
             fatalError("Unknow value in when parsing val expr.")
         }
         nextTokenWithoutWhitespace()
-        return parseBinary(0, lhs: &expr)
+        switch currentToken {
+        case .operator(_):
+            expr = parseBinaryExpr(0, lhs: &expr)
+        case .dot:
+            //解析火锅方法调用或者火锅属性调用
+            while true {
+                nextTokenWithoutWhitespace()
+                guard case .identifier(let name) = currentToken else {
+                    fatalError("Excepted name after '.'.")
+                }
+                //看两位
+                if nextCurrentToken == .leftParen {
+                    let funcCall = parseFuncCallExpr()
+                    nextTokenWithoutWhitespace()
+                    let varExpr = VarExpr(name: name)
+                    expr = MethodRefExpr(lhs: expr, varExpr: varExpr, funcCall: funcCall)
+                    if currentToken != .dot {
+                        break
+                    }
+                } else if nextCurrentToken == .dot {
+                    let varExpr = VarExpr(name: name)
+                    expr = PropertyRefExpr(lhs: expr, varExpr: varExpr)
+                    nextTokenWithoutWhitespace()
+                    continue
+                } else {
+                    let varExpr = VarExpr(name: name)
+                    expr = PropertyRefExpr(lhs: expr, varExpr: varExpr)
+                    nextTokenWithoutWhitespace()
+                    break
+                }
+            }
+        default:
+            break
+        }
+        return expr
     }
     
-    func parseBinary(_ exprPrec: Int, lhs: inout Expr) -> Expr {
+    private func parseBinaryExpr(_ exprPrec: Int, lhs: inout Expr) -> Expr {
         while true {
             guard case let .operator(op) = currentToken else {
                 return lhs
@@ -82,13 +117,13 @@ extension Parser {
             var rhs = parseExpr()
             let nextPrec = getTokenPrecedence()
             if tokPrec < nextPrec {
-                rhs = parseBinary(tokPrec + 1, lhs: &rhs)
+                rhs = parseBinaryExpr(tokPrec + 1, lhs: &rhs)
             }
             lhs = BinaryExpr(op: op, lhs: lhs, rhs: rhs)
         }
     }
     
-    func getTokenPrecedence() -> Int {
+    private func getTokenPrecedence() -> Int {
         if case let .operator(op) = currentToken {
             return op.precedence
         } else {

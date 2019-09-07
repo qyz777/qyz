@@ -32,8 +32,14 @@ extension Parser {
             fatalError("Excepted '(' after \(name).")
         }
         nextTokenWithoutWhitespace()
-        let args = parseArguments()
-        return FuncCallExpr(name: name, args: args)
+        let args: [Argument]
+        if currentToken == .rightParen {
+            nextTokenWithoutWhitespace()
+            args = []
+        } else {
+            args = parseArguments()
+        }
+        return FuncCallExpr(varExpr: VarExpr(name: name), args: args)
     }
     
     private func parsePrototype() -> FuncPrototype {
