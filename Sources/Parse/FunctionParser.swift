@@ -77,6 +77,9 @@ extension Parser {
     
     private func parseParams() -> [ParamDecl] {
         var params: [ParamDecl] = []
+        guard currentToken != .rightParen else {
+            return params
+        }
         while currentToken != .eof  {
             params.append(parseParamDecl())
             nextTokenWithoutWhitespace()

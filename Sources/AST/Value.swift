@@ -87,7 +87,7 @@ public class VarExpr: Expr {
     
     public init(name: String) {
         self.name = name
-        super.init(type: .variable)
+        super.init(type: .hotpot(name: name))
     }
     
     public override func description() {

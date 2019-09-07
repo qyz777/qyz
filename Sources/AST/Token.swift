@@ -37,6 +37,7 @@ public enum Token: Equatable {
     case newLine
     case whitespace // " "
     case tab // "\t"
+    case hotpot
     case eof
     case unknow(String)
     
@@ -95,6 +96,10 @@ public enum Token: Equatable {
             self = .false
         case "null":
             self = .null
+        case "return":
+            self = .return
+        case "hotpot":
+            self = .hotpot
         default:
             self = .identifier(identifier)
         }
@@ -140,7 +145,7 @@ public enum Token: Equatable {
             return 2
         case .while, .break, .false:
             return 5
-        case .return:
+        case .return, .hotpot:
             return 6
         case .continue:
             return 8

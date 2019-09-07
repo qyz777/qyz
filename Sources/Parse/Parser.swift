@@ -58,6 +58,9 @@ public extension Parser {
             if currentToken == .def {
                 let def = parseFuncDecl()
                 def.description()
+            } else if currentToken == .hotpot {
+                let hotpot = parseHotpot()
+                hotpot.description()
             } else if currentToken.isWhitespace {
                 nextToken()
             } else {

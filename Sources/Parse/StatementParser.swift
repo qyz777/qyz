@@ -23,6 +23,8 @@ extension Parser {
             stmt = parseBreakStmt()
         case .continue:
             stmt = parseContinueStmt()
+        case .return:
+            stmt = parseReturnStmt()
         case .identifier(_):
             if nextCurrentToken == .colon {
                 //多看下一个token，是':'就说明是变量声明
@@ -134,7 +136,6 @@ extension Parser {
                 nextToken()
             }
             //缩进往前了，该结束这个block了，暂时写成0也可以出去
-            //todo: 假如会支持class的话这里需要支持类的缩进
             if whitespaceCount == lastColumnStart || whitespaceCount == 0 {
                 break
             }
