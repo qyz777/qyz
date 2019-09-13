@@ -29,6 +29,10 @@ let package = Package(
             name: "Parse",
             dependencies: ["AST"]
         ),
+        .target(
+            name: "Sema",
+            dependencies: ["AST"]
+        ),
         .testTarget(
             name: "qyzTests",
             dependencies: ["qyz"]),

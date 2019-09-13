@@ -114,28 +114,17 @@ public class ArrayExpr: Expr {
     
 }
 
-public protocol RefExpr {
-    
-    var lhs: Expr { get }
-    
-    var varExpr: VarExpr { get }
-    
-}
-
-/// <method-ref-expr> ::= <var-expr>.<func-call-expr>
-public class MethodRefExpr: Expr, RefExpr {
+/// <method-ref-expr> ::= <expr>.<func-call-expr>
+public class MethodRefExpr: Expr {
     
     public let lhs: Expr
     
-    public let varExpr: VarExpr
-    
     public let funcCall: FuncCallExpr
     
-    public init(lhs: Expr, varExpr: VarExpr, funcCall: FuncCallExpr) {
+    public init(lhs: Expr, funcCall: FuncCallExpr) {
         self.funcCall = funcCall
         self.lhs = lhs
-        self.varExpr = varExpr
-        super.init(type: .method)
+        super.init(type: funcCall.type)
     }
     
     public override func description() {
@@ -145,7 +134,7 @@ public class MethodRefExpr: Expr, RefExpr {
 }
 
 /// <property-ref-expr> ::= <var-expr>.<var-expr>
-public class PropertyRefExpr: Expr, RefExpr {
+public class PropertyRefExpr: Expr {
     
     public let lhs: Expr
     
@@ -154,7 +143,7 @@ public class PropertyRefExpr: Expr, RefExpr {
     public init(lhs: Expr, varExpr: VarExpr) {
         self.lhs = lhs
         self.varExpr = varExpr
-        super.init(type: .property)
+        super.init(type: lhs.type)
     }
     
     public override func description() {

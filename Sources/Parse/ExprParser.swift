@@ -81,8 +81,7 @@ extension Parser {
                 if nextCurrentToken == .leftParen {
                     let funcCall = parseFuncCallExpr()
                     nextTokenWithoutWhitespace()
-                    let varExpr = VarExpr(name: name)
-                    expr = MethodRefExpr(lhs: expr, varExpr: varExpr, funcCall: funcCall)
+                    expr = MethodRefExpr(lhs: expr, funcCall: funcCall)
                     if currentToken != .dot {
                         break
                     }

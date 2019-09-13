@@ -63,6 +63,14 @@ public extension Parser {
                 hotpot.description()
             } else if currentToken.isWhitespace {
                 nextToken()
+            } else if case .identifier(_) = currentToken {
+                if nextCurrentToken == .colon {
+                    let globalDecl = parseVarDecl()
+                    globalDecl.description()
+                } else {
+                    let s = parseStmt()
+                    s.description()
+                }
             } else {
                 let s = parseStmt()
                 s.description()

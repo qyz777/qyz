@@ -64,7 +64,7 @@ extension Parser {
         if currentToken == .newLine {
             //跳过\n
             nextToken()
-            return FuncPrototype(name: funcName, params: params, returnType: .void)
+            return FuncPrototype(name: funcName, params: params, returnType: .null)
         } else {
             if case let Token.identifier(type) = currentToken {
                 //判断下一个是不是\n

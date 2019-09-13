@@ -28,7 +28,7 @@ public class FuncPrototype: Decl {
         self.name = name
         self.params = params
         self.returnType = returnType
-        super.init(type: .def)
+        super.init(type: .def(args: params.map({ $0.type }), returnType: returnType))
     }
     
     public override func description() {
@@ -47,7 +47,7 @@ public class FuncDecl: Decl {
     public init(prototype: FuncPrototype, body: BlockStmt) {
         self.prototype = prototype
         self.body = body
-        super.init(type: .def)
+        super.init(type: prototype.type)
     }
     
     public override func description() {
@@ -66,7 +66,7 @@ public class FuncCallExpr: Expr {
     public init(varExpr: VarExpr, args: [Argument]) {
         self.varExpr = varExpr
         self.args = args
-        super.init(type: .def)
+        super.init(type: .default)
     }
     
     public override func description() {
