@@ -42,6 +42,10 @@ public protocol ASTVisitor {
     
     func visitPropertyRefExpr(_ expr: PropertyRefExpr)
     
+    func visitBinaryExpr(_ expr: BinaryExpr)
+    
+    func visitUnaryExpr(_ expr: UnaryExpr)
+    
     //MARK: Decl
     
     func visitParmaDecl(_ decl: ParamDecl)
@@ -161,6 +165,10 @@ extension ASTVisitor {
             visitPropertyRefExpr(e)
         case let e as FuncCallExpr:
             visitFuncCallExpr(e)
+        case let e as BinaryExpr:
+            visitBinaryExpr(e)
+        case let e as UnaryExpr:
+            visitUnaryExpr(e)
         default:
             fatalError("Unknow expr: \(expr)")
         }

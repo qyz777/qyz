@@ -49,6 +49,7 @@ public enum DataType: Hashable {
 //public class MethodDecl: FuncDecl {}
 
 /// 🍲 ::= hotpot <hotpot-name> : <data-type> [<var-decl>, <func-decl>]
+//TODO: 初始化方法还没做
 public class HotpotDecl: Decl {
     
     private(set) public var properties: [VarDecl] = []
