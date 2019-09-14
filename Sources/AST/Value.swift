@@ -17,8 +17,6 @@ public class Expr: ASTNode {
     
 }
 
-public class VoidExpr: Expr {}
-
 public class NullExpr: Expr {}
 
 public class IntExpr: Expr {
