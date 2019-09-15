@@ -124,4 +124,121 @@ public class Sema: ASTTransformer, SemaErrorRepoter {
         
     }
     
+    public override func visitPropertyRefExpr(_ expr: PropertyRefExpr) {
+        super.visitPropertyRefExpr(expr)
+        //1.检查访问有效性
+        guard let varExpr: VarExpr = expr.lhs as? VarExpr else {
+            error(.canNotFindProperty(name: expr.varExpr.name))
+            return
+        }
+        //2.检查火锅是否有这个属性
+        var flag = false
+        for hotpot in context.hotpots {
+            if let d = varExpr.decl as? HotpotDecl {
+                if d.name == hotpot.name {
+                    for property in d.properties {
+                        if property.name == expr.varExpr.name {
+                            flag = true
+                        }
+                    }
+                }
+            }
+        }
+        if !flag {
+            error(.canNotFindProperty(name: expr.varExpr.name))
+            return
+        }
+    }
+    
+    public override func visitArrayExpr(_ expr: ArrayExpr) {
+        super.visitArrayExpr(expr)
+        guard case .array(let valueType) = expr.type else {
+            fatalError("严重错误，数组AST的type不是array")
+        }
+        for value in expr.values {
+            if value.type != valueType {
+                error(.canNotConvertValue(t1: value.type, t2: valueType))
+            }
+        }
+    }
+    
+    public override func visitVarExpr(_ expr: VarExpr) {
+        super.visitVarExpr(expr)
+        //1.找到它的声明
+        if currentHotpot != nil {
+            //火锅里找找有没有这个属性
+            for property in currentHotpot!.properties {
+                if property.name == expr.name {
+                    expr.decl = property
+                    break
+                }
+            }
+        } else if currentFunction != nil {
+            //方法参数里找找
+            currentFunction!.prototype.params.forEach({
+                if $0.name == expr.name {
+                    expr.decl = $0
+                    return
+                }
+            })
+            if expr.decl == nil {
+                currentFunction!.body.stmts.forEach({
+                    if let stmt: ExprStmt = $0 as? ExprStmt {
+                        //如果遇到varExpr了就停止
+                        if let e: VarExpr = stmt.expr as? VarExpr {
+                            if e.name == expr.name {
+                                return
+                            }
+                        }
+                    } else if let stmt: DeclStmt = $0 as? DeclStmt {
+                        if let d = stmt.decl as? VarDecl {
+                            if d.name == expr.name {
+                                expr.decl = d
+                            }
+                        }
+                    }
+                })
+            }
+        } else {
+            //global里找找
+            context.globals.forEach({
+                if $0.name == expr.name {
+                    expr.decl = $0
+                }
+            })
+        }
+        //2.检查声明
+        if expr.decl == nil {
+            error(.unknowVariableName(name: expr.name))
+        }
+    }
+    
+    //MARK: Stmt
+    
+    public override func visitContinueStmt(_ stmt: ContinueStmt) {
+        super.visitContinueStmt(stmt)
+        if currentBreakTarget == nil {
+            error(.continueNotAllowed)
+        }
+    }
+    
+    public override func visitBreakStmt(_ stmt: BreakStmt) {
+        super.visitBreakStmt(stmt)
+        if currentBreakTarget == nil {
+            error(.breakNotAllowed)
+        }
+    }
+    
+    public override func visitReturnStmt(_ stmt: ReturnStmt) {
+        super.visitReturnStmt(stmt)
+        if currentFunction == nil {
+            error(.returnNotAllowed)
+        } else {
+            if currentFunction!.prototype.returnType != stmt.value.type {
+                error(.unexpectedReturn(type: stmt.value.type.description,
+                                        func: currentFunction!.prototype.name))
+            }
+        }
+    }
+    
 }

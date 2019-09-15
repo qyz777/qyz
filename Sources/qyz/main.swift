@@ -86,12 +86,12 @@ d = h.a
 """
 
 let p = Parser()
-//p.parse(input: input)
-//p.parse(input: input1)
-//p.parse(input: input2)
-//p.parse(input: input3)
-//p.parse(input: input4)
+_ = p.parse(input: input)
+_ = p.parse(input: input1)
+_ = p.parse(input: input2)
+_ = p.parse(input: input3)
+_ = p.parse(input: input4)
 let context = p.parse(input: input5)
-let sema = Sema(context: context)
-sema.run()
+//let sema = Sema(context: context)
+//sema.run()
 

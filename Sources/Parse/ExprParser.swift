@@ -74,6 +74,7 @@ extension Parser {
             //解析火锅方法调用或者火锅属性调用
             while true {
                 nextTokenWithoutWhitespace()
+                //todo:这里可能不只是identifier
                 guard case .identifier(let name) = currentToken else {
                     fatalError("Excepted name after '.'.")
                 }

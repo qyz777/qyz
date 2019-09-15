@@ -12,18 +12,18 @@ public class ASTContext {
     public init() {}
     
     /// 使用范围是global
-    public var statements: [Stmt] = []
+    private(set) public var statements: [Stmt] = []
     
     /// 使用范围是global
-    public var functions: [FuncDecl] = []
+    private(set) public var functions: [FuncDecl] = []
     
-    public var hotpots: [HotpotDecl] = []
+    private(set) public var hotpots: [HotpotDecl] = []
     
-    public var globals: [VarDecl] = []
+    private(set) public var globals: [VarDecl] = []
     
-    public var mainFunc: FuncDecl?
+    private(set) public var mainFunc: FuncDecl?
     
-    private var hotpotDeclInfo: [DataType: HotpotDecl] = [
+    private(set) public var hotpotDeclInfo: [DataType: HotpotDecl] = [
         .int64: HotpotDecl(name: "int"),
         .float: HotpotDecl(name: "float"),
         .double: HotpotDecl(name: "double"),
@@ -32,9 +32,9 @@ public class ASTContext {
         .bool: HotpotDecl(name: "bool")
     ]
     
-    private var globalDeclInfo: [String: VarDecl] = [:]
+    private(set) public var globalDeclInfo: [String: VarDecl] = [:]
     
-    private var functionDeclInfo: [String: FuncDecl] = [:]
+    private(set) public var functionDeclInfo: [String: FuncDecl] = [:]
     
     public func add(_ stmt: Stmt) {
         statements.append(stmt)

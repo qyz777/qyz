@@ -43,6 +43,33 @@ public enum DataType: Hashable {
     
 }
 
+extension DataType: CustomStringConvertible {
+    
+    public var description: String {
+        switch self {
+        case .int(let w, _):
+            return "int\(w)"
+        case .float(let t):
+            return t == .double ? "double" : "float"
+        case .bool:
+            return "bool"
+        case .string:
+            return "string"
+        case .hotpot(let name):
+            return name
+        case .null:
+            return "null"
+        case .array(let t):
+            return "[\(t.description)]"
+        case .def(_, _):
+            return "function"
+        default:
+            return "Unknow"
+        }
+    }
+    
+}
+
 //暂时这两者与父类还无区别
 //public class PropertyDecl: VarDecl {}
 //
