@@ -7,6 +7,14 @@
 
 import Foundation
 
+public enum DeclScope {
+    
+    case local(func: FuncDecl)
+    case property(hotpot: HotpotDecl)
+    case global
+    
+}
+
 public class Decl: ASTNode {
     
     public let type: DataType
@@ -32,6 +40,8 @@ public class VarDecl: Decl {
     public let name: String
     
     public let rhs: Expr?
+    
+    public var scope: DeclScope?
     
     public init(type: DataType, name: String, rhs: Expr? = nil) {
         self.name = name

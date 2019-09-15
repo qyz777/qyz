@@ -12,10 +12,13 @@ public class Stmt: ASTNode {}
 /// 混合Stmt，包含多种Stmt在内 <block-stmt> ::= [<stmt>]
 public class BlockStmt: Stmt {
     
-    let stmts: [Stmt]
+    public let stmts: [Stmt]
     
-    public init(stmts: [Stmt]) {
+    public let hasReturn: Bool
+    
+    public init(stmts: [Stmt], hasReturn: Bool) {
         self.stmts = stmts
+        self.hasReturn = hasReturn
     }
     
     public override func description() {

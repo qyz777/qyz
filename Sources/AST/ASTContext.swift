@@ -9,6 +9,8 @@ import Foundation
 
 public class ASTContext {
     
+    public init() {}
+    
     /// 使用范围是global
     public var statements: [Stmt] = []
     
@@ -66,6 +68,13 @@ public class ASTContext {
             fatalError("Repeated declare function: \(funcDecl.prototype.name)")
         }
         functions.append(funcDecl)
+    }
+    
+    public func isValidDataType(_ type: DataType) -> Bool {
+        if case .hotpot(_) = type {
+            return hotpotDeclInfo[type] != nil
+        }
+        return true
     }
     
 }

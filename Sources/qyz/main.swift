@@ -7,6 +7,7 @@
 
 import Foundation
 import Parse
+import Sema
 
 let input = """
 a: [int] = [1, 2, 3, 4]
@@ -85,10 +86,12 @@ d = h.a
 """
 
 let p = Parser()
-p.parse(input: input)
-p.parse(input: input1)
-p.parse(input: input2)
-p.parse(input: input3)
-p.parse(input: input4)
-p.parse(input: input5)
+//p.parse(input: input)
+//p.parse(input: input1)
+//p.parse(input: input2)
+//p.parse(input: input3)
+//p.parse(input: input4)
+let context = p.parse(input: input5)
+let sema = Sema(context: context)
+sema.run()
 

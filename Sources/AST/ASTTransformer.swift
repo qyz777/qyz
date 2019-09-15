@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class ASTTransformer {
+open class ASTTransformer: ASTVisitor {
     
     public var currentFunction: FuncDecl?
     public var currentScope: BlockStmt?
@@ -57,88 +57,82 @@ public class ASTTransformer {
         currentScope = oldScope
     }
     
-    public func run() {
+    open func run() {
         context.hotpots.forEach(visitHotpotDecl(_:))
         context.globals.forEach(visitVarDecl(_:))
         context.functions.forEach(visitFuncDecl(_:))
         context.statements.forEach(visit(_:))
     }
-
     
-}
-
-extension ASTTransformer: ASTVisitor {
-    
-    public func visitNullExpr(_ expr: NullExpr) {
+    open func visitNullExpr(_ expr: NullExpr) {
         
     }
     
-    public func visitIntExpr(_ expr: IntExpr) {
+    open func visitIntExpr(_ expr: IntExpr) {
         
     }
     
-    public func visitFloatExpr(_ expr: FloatExpr) {
+    open func visitFloatExpr(_ expr: FloatExpr) {
         
     }
     
-    public func visitBoolExpr(_ expr: BoolExpr) {
+    open func visitBoolExpr(_ expr: BoolExpr) {
         
     }
     
-    public func visitStringExpr(_ expr: StringExpr) {
+    open func visitStringExpr(_ expr: StringExpr) {
         
     }
     
-    public func visitVarExpr(_ expr: VarExpr) {
+    open func visitVarExpr(_ expr: VarExpr) {
         if let decl = expr.decl {
             visit(decl)
         }
     }
     
-    public func visitArrayExpr(_ expr: ArrayExpr) {
+    open func visitArrayExpr(_ expr: ArrayExpr) {
         expr.values.forEach(visit(_:))
     }
     
-    public func visitMethodRefExpr(_ expr: MethodRefExpr) {
+    open func visitMethodRefExpr(_ expr: MethodRefExpr) {
         visit(expr.lhs)
-        visitFuncCallExpr(expr.funcCall)
     }
     
-    public func visitPropertyRefExpr(_ expr: PropertyRefExpr) {
+    open func visitPropertyRefExpr(_ expr: PropertyRefExpr) {
         visit(expr.lhs)
         visit(expr.varExpr)
     }
     
-    public func visitBinaryExpr(_ expr: BinaryExpr) {
+    open func visitBinaryExpr(_ expr: BinaryExpr) {
         visit(expr.lhs)
         visit(expr.rhs)
     }
     
-    public func visitUnaryExpr(_ expr: UnaryExpr) {
+    open func visitUnaryExpr(_ expr: UnaryExpr) {
         visit(expr.rhs)
     }
     
-    public func visitParmaDecl(_ decl: ParamDecl) {
+    open func visitParmaDecl(_ decl: ParamDecl) {
         visitVarDecl(decl)
     }
     
-    public func visitVarDecl(_ decl: VarDecl) {
+    open func visitVarDecl(_ decl: VarDecl) {
         if let rhs = decl.rhs {
             visit(rhs)
         }
     }
     
-    public func visitBlockStmt(_ stmt: BlockStmt) {
+    open func visitBlockStmt(_ stmt: BlockStmt) {
         withScope(stmt) {
             stmt.stmts.forEach(visit(_:))
         }
     }
     
-    public func visitReturnStmt(_ stmt: ReturnStmt) {
+    open func visitReturnStmt(_ stmt: ReturnStmt) {
         visit(stmt.value)
     }
     
-    public func visitIfStmt(_ stmt: IfStmt) {
+    open func visitIfStmt(_ stmt: IfStmt) {
         for (condition, body) in stmt.conditions {
             visit(condition)
             visitBlockStmt(body)
@@ -148,7 +142,7 @@ extension ASTTransformer: ASTVisitor {
         }
     }
     
-    public func visitForStmt(_ stmt: ForStmt) {
+    open func visitForStmt(_ stmt: ForStmt) {
         withScope(stmt.body) {
             visit(stmt.initializer)
             visit(stmt.condition)
@@ -159,36 +153,36 @@ extension ASTTransformer: ASTVisitor {
         }
     }
     
-    public func visitWhileStmt(_ stmt: WhileStmt) {
+    open func visitWhileStmt(_ stmt: WhileStmt) {
         visit(stmt.condition)
         withBreakTarget(stmt) {
             visitBlockStmt(stmt.body)
         }
     }
     
-    public func visitExprStmt(_ stmt: ExprStmt) {
+    open func visitExprStmt(_ stmt: ExprStmt) {
         visit(stmt.expr)
     }
     
-    public func visitDeclStmt(_ stmt: DeclStmt) {
+    open func visitDeclStmt(_ stmt: DeclStmt) {
         visit(stmt.decl)
     }
     
-    public func visitBreakStmt(_ stmt: BreakStmt) {
+    open func visitBreakStmt(_ stmt: BreakStmt) {
         
     }
     
-    public func visitContinueStmt(_ stmt: ContinueStmt) {
+    open func visitContinueStmt(_ stmt: ContinueStmt) {
         
     }
     
-    public func visitFuncPrototype(_ prototype: FuncPrototype) {
+    open func visitFuncPrototype(_ prototype: FuncPrototype) {
         for param in prototype.params {
             visitParmaDecl(param)
         }
     }
     
-    public func visitFuncDecl(_ decl: FuncDecl) {
+    open func visitFuncDecl(_ decl: FuncDecl) {
         withFunction(decl) {
             withScope(decl.body, {
                 self.visitFuncPrototype(decl.prototype)
@@ -197,12 +191,12 @@ extension ASTTransformer: ASTVisitor {
         }
     }
     
-    public func visitFuncCallExpr(_ expr: FuncCallExpr) {
+    open func visitFuncCallExpr(_ expr: FuncCallExpr) {
         visit(expr.varExpr)
         expr.args.forEach({ visit($0.val) })
     }
     
-    public func visitHotpotDecl(_ decl: HotpotDecl) {
+    open func visitHotpotDecl(_ decl: HotpotDecl) {
         withHotpotDecl(decl) {
             //TODO: 初始化方法还没做
             for method in decl.methods {

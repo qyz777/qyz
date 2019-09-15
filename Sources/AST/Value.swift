@@ -9,7 +9,7 @@ import Foundation
 
 public class Expr: ASTNode {
     
-    var type: DataType = .default
+    public var type: DataType = .default
     
     public init(type: DataType) {
         self.type = type

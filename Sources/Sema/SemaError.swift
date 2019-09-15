@@ -16,6 +16,9 @@ public enum SemaError: Error {
     case unknowDataType(type: DataType)
     case breakNotAllowed
     case continueNotAllowed
+    case notAllPathsReturn(type: DataType)
+    case canNotConvertValue(t1: DataType, t2: DataType)
+    case canNotCallMethod(name: String)
     
 }
 
@@ -35,7 +38,27 @@ extension SemaError: CustomStringConvertible {
             return "'break' not allowed outside of loop"
         case .continueNotAllowed:
             return "'continue' not allowed outside of loop"
+        case .notAllPathsReturn(let type):
+            return "Not all paths return type: \(type)"
+        case .canNotConvertValue(let t1, let t2):
+            return "Can not Convert value of type '\(t1)' to type '\(t2)'"
+        case .canNotCallMethod(let name):
+            return "Can not call method: '\(name)'"
         }
+    }
+    
+}
+
+protocol SemaErrorRepoter {
+    
+    func error(_ error: SemaError)
+    
+}
+
+extension SemaErrorRepoter {
+    
+    func error(_ error: SemaError) {
+        fatalError(error.description)
     }
     
 }

@@ -8,8 +8,8 @@
 import Foundation
 
 public struct Argument {
-    let label: String
-    let val: Expr
+    public let label: String
+    public let val: Expr
     public init(label: String, val: Expr) {
         self.label = label
         self.val = val
@@ -20,9 +20,9 @@ public struct Argument {
 /// <func-prototype> ::= <identifier>(<param-decl>*) : <data-type>
 public class FuncPrototype: Decl {
     
-    let name: String
-    let params: [ParamDecl]
-    let returnType: DataType
+    public let name: String
+    public let params: [ParamDecl]
+    public let returnType: DataType
     
     public init(name: String, params: [ParamDecl], returnType: DataType) {
         self.name = name
@@ -41,8 +41,8 @@ public class FuncPrototype: Decl {
 /// <func-decl> ::= <prototype> \n <block-stmt>
 public class FuncDecl: Decl {
     
-    let prototype: FuncPrototype
-    let body: BlockStmt
+    public let prototype: FuncPrototype
+    public let body: BlockStmt
     
     public init(prototype: FuncPrototype, body: BlockStmt) {
         self.prototype = prototype
@@ -60,8 +60,10 @@ public class FuncDecl: Decl {
 /// <func-call-expr> ::= <var-expr>(<argument>*)
 public class FuncCallExpr: Expr {
     
-    let varExpr: VarExpr
-    let args: [Argument]
+    public let varExpr: VarExpr
+    public let args: [Argument]
+    
+    public var isHotpot = false
     
     public init(varExpr: VarExpr, args: [Argument]) {
         self.varExpr = varExpr

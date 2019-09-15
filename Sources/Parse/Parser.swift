@@ -49,34 +49,41 @@ public class Parser {
 
 public extension Parser {
     
-    func parse(input: String) {
+    func parse(input: String) -> ASTContext {
         tokens = lexer.analyze(input: input)
+        let context = ASTContext()
         guard !tokens.isEmpty else {
-            return
+            return context
         }
         while currentToken != .eof {
             if currentToken == .def {
                 let def = parseFuncDecl()
                 def.description()
+                context.add(def)
             } else if currentToken == .hotpot {
                 let hotpot = parseHotpot()
                 hotpot.description()
+                context.add(hotpot)
             } else if currentToken.isWhitespace {
                 nextToken()
             } else if case .identifier(_) = currentToken {
                 if nextCurrentToken == .colon {
                     let globalDecl = parseVarDecl()
                     globalDecl.description()
+                    context.add(globalDecl)
                 } else {
                     let s = parseStmt()
                     s.description()
+                    context.add(s)
                 }
             } else {
                 let s = parseStmt()
                 s.description()
+                context.add(s)
             }
         }
         clear()
+        return context
     }
     
 }

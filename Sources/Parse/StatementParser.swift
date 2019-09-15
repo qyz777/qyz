@@ -129,6 +129,7 @@ extension Parser {
     func parseBlockStmt(check: Bool = true) -> BlockStmt {
         enterBlock()
         var stmts: [Stmt] = []
+        var hasReturn = false
         while true {
             var whitespaceCount = 0
             while currentToken == .whitespace {
@@ -143,7 +144,11 @@ extension Parser {
             guard whitespaceCount == currentColumnStart else {
                 fatalError("Invalid indentation!")
             }
-            stmts.append(parseStmt())
+            let stmt = parseStmt()
+            if stmt is ReturnStmt {
+                hasReturn = true
+            }
+            stmts.append(stmt)
             if check {
                 //检查newLine，一个block后必须有newLine，否则违反语法
                 guard currentToken == .newLine || currentToken == .eof else {
@@ -153,7 +158,7 @@ extension Parser {
             }
         }
         leaveBlock()
-        return BlockStmt(stmts: stmts)
+        return BlockStmt(stmts: stmts, hasReturn: hasReturn)
     }
     
 }
